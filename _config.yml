@@ -1,8 +1,8 @@
-title: Hamilton
+title: Restrung
 description: A minimal and beautiful Jekyll theme best for writing and note-taking.
-author: Shangzhi Huang
+author: XIAO LIJIA
 avatar: /logo.png
-email: ngzhio@gmail.com
+email: 2530183231@qq.com
 
 plugins:
   - jekyll-seo-tag
@@ -40,4 +40,4 @@ social:
     - https://www.facebook.com/ngzhio
     - https://github.com/ngzhio
 google_site_verification: u4WXQl0Eu66rsQo2kRdCNx
-lang: en
+lang: zh-Hans
