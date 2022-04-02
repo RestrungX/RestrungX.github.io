@@ -33,7 +33,7 @@ jekyll中文网站 主页 [https://www.jekyll.com.cn/][jek-yll]
 ## 步骤一,创建GitHub博客
   注册一个github自行打开GitHub官网输入昵称邮箱密码注册
 
-<img src="C:\Users\25301\Desktop\RestrungX.github.io\RestrungX.github.io\_posts\2022-04-01-使用github+jekyll搭建个人博客\image-20220401222441721.png" alt="image-20220401222441721" style="zoom:25%;" />
+
 
 
 ## 步骤二,前往jekyll的主题商店挑选主题
