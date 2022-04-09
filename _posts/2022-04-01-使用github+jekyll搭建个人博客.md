@@ -2,7 +2,7 @@
 layout: post
 toc: true
 title: "使用github+jekyll搭建个人博客"
-categories: junk
+categories: misc
 tags: [markdown, css, html]
 author:
   - Xiao LijiA
