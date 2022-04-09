@@ -1,12 +1,10 @@
 ---
 layout: post
-toc: true
+
 title: "使用github+jekyll搭建个人博客"
-categories: misc
-tags: [markdown, css, html]
-author:
-  - Xiao LijiA
-  ![b18461fe08cc272dba4634e87a7b](C:\Users\25301\Desktop\b18461fe08cc272dba4634e87a7b.jpg)
+
+
+
 
 ---
 
