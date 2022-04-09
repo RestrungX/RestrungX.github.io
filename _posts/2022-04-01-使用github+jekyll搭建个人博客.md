@@ -1,7 +1,7 @@
 ---
 layout: post
 toc: true
-title: "使用github+jekyll搭建个人博客"
+title: "基于uni-app的微信小程序全教程"
 categories: misc
 tags: [markdown, css, html]
 author:
