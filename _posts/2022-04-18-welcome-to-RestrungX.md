@@ -51,3 +51,19 @@ Vue.use(animated);
        },
 ```
 
+# vue使用静态图片当作盒子背景
+
+```vue-js
+//在data里声明一个对象bg用来存储背景图片（当然对象bg里面可以设置其他的background属性，我这里只运用了img）
+bg: {
+                backgroundImage: "url(" + require("../assets/联系我们bg.jpg") + ")",
+               },
+               
+//require是node语法
+```
+
+```
+//在需要添加背景图片的盒子里使用
+	:style="bg"（vue数据绑定）
+```
+
