@@ -67,264 +67,37 @@ bg: {
 	:style="bg"（vue数据绑定）
 ```
 
-# vue单页面应用也可以seo优化
-
-## 主流的方案
-
-[1.SSR服务器渲染；]: https://link.csdn.net/?target=https%3A%2F%2Fssr.vuejs.org%2Fzh%2F
-
-2.静态化；
-
-3.Nuxt；
-4.预渲染prerender-spa-plugin；
-
-第一点推荐先去官网了解清楚一下，这里不是使用的这个方案。我的是已经完成的vue应用，再去采用SSR方案就有点不太现实了，如果非要使用SSR的话，建议在着手开发之前，就了解清楚。
-
-第二点静态化，直接放弃。手写静态代码太难受了。
-
-第三点prerender-spa-plugin是主要的插件，再搭配几个其他的插件一起可以达到比较好的效果。
-
-## 方案内容
-
-1.prerender-spa-plugin
-
-这个插件是模拟浏览器访问站点将站点内容以静态文件方式保存。
-
-运行流程为：
-
-读取配置，获取需要预渲染的页面-->模拟浏览器打开页面-->页面脚本触发渲染时机-->渲染出当前页面内容-->获取当前所有的dom结构-->生成HTML文件
-
-```
-npm i prerender-spa-plugin
-```
-
-2.sitemap-webpack-plugin
-
-这个插件是生成站点地图的，在各大搜索引擎中会要你提交站点地图文件以供它来收录你的站点。
-
-```
-npm i sitemap-webpack-plugin
-```
-
-3.vue-meta-info
-
-这个插件是动态配制内容展示页中的<title>标签、keywords关键字、description描述内容的。
-
-```
-npm i vue-meta-info
-```
-
-## 配置
-
-### 1.prerender-spa-plugin
-
-build目录下webpack.prod.conf.js文件中引入：
-
-```
-// 预渲染配置：在webpack.prod.conf文件中加入
-const PrerenderSPAPlugin = require('prerender-spa-plugin')
-const Renderer = PrerenderSPAPlugin.PuppeteerRenderer
-```
-
-
-build目录下webpack.prod.conf.js文件中plugins节点下：
-
-```
-new PrerenderSPAPlugin({
-      // 生成文件的路径，也可以与webpakc打包的一致。
-      // 这个目录只能有一级，如果目录层次大于一级，在生成的时候不会有任何错误提示，在预渲染的时候只会卡着不动。
-      staticDir: path.join(__dirname, '../dist'),
-      indexPath: path.join(__dirname, '../dist', 'index.html'),
-      // 对应自己的路由文件，比如a有参数，就需要写成 /a/param1。
-      routes: [
-        '/', '/aaa','/bbb', '/ccc', '/ddd', '/eee',
-        '/fff', '/zzz', '/ggg', '/hh/jj'
-      ],
-      server: {
-        proxy: {
-          // 配制代理，有些情况下很有用，他在模拟浏览器访问的时候讲采用以下配制的代理方案，看情况自选，不是必须
-          '/api': {
-            target: 'http://www.xxxxx.com',
-            changeOrigin: true,
-            secure: false,
-          },
-```
 
 
 
-        }
-      },
-      // 这个很重要，如果没有配置这段，也不会进行预编译
-      renderer: new Renderer({
-        inject: {
-          foo: 'bar'
-        },
-        headless: false,
-        renderAfterDocumentEvent: 'render-event', // render-active 在 main.js 中 document.dispatchEvent(new Event('render-event'))，两者的事件名称要对应上。
-        renderAfterElementExists: '#app',
-        renderAfterTime: 10000,
-        args: ['--no-sandbox', '--disable-setuid-sandbox'],
-      })
-    }),
-prerender-spa-plugin的GitHub地址，有详细的相关API
-
-src目录下main.js文件中：
-
-```
-new Vue({
-  el: '#app',
-  router,
-  store,
-  components: {
-    App
-  },
-  template: '<App/>',
-  // 以下内容是重点：添加mounted，不然不会执行预编译  render-event / render-active
-  mounted () {
-    document.dispatchEvent(new Event('render-event'))
-  }
-})
-```
-
-至此基本配制好了
-
-1.有时候会报错：无法渲染所有路由。我遇到这个问题的时候新开一个终端窗口或者将render-event替换成render-active重新打包一次就好了。
-
-2.在main.js中的render-event 或者render-active的值一定要与webpack.prod.conf.js文件中的值相同，具体请点击上方链接自行查看文档说明，这里就不重复贴了。
-
-### 2.sitemap-webpack-plugin
-
-build目录下webpack.prod.conf.js文件中引入：
-
-const SitemapPlugin = require('sitemap-webpack-plugin').default;
-build目录下webpack.prod.conf.js文件中加入：
-
-```
-//生成sitemap
-const routesList = ['/', '/', '/bbb', '/ccc',
-  '/ddd', '/eee', '/fff', '/ggg', '/hhh',
-  '/mm', '/mm/kk', '/ll/dd'
-];
-```
-
-
-build目录下webpack.prod.conf.js文件中plugins节点下：
-
-```
-new SitemapPlugin('http://www.xxxx.com', routesList, {
-      fileName: 'sitemap.xml',
-      lastMod: true,
-      changeFreq: 'monthly'
-    }),
-```
-
-
-至此配置完成。成功运行后会在你指定的打包输出目录中生成sitemap.xml文件与sitemap.xml.gz文件。
-
-3.vue-meta-info
-
-src目录下main.js文件中引入：
-
-```
-//seo优化
-import MetaInfo from 'vue-meta-info'
-Vue.use(MetaInfo)
-src目录下新建vue-meta-info.js（注意是与main.js同级）:
-
-;var metaInfo = {
-  index: {
-    title: '这是页面标题内容index',
-    meta: [{
-        name: 'keywords',
-        content: '这是关键字,以,分隔,一般不超过100个字符'
-      },
-      {
-        name: 'description',
-        content: '这是描述一般不超过200个字符'
-      }
-    ]
-  },
-  home: {
-    title: '这是页面标题内容home',
-    meta: [{
-        name: 'keywords',
-        content: '这是关键字,以,分隔,一般不超过100个字符'
-      },
-      {
-        name: 'description',
-        content: '这是描述一般不超过200个字符'
-      }
-    ]
-  },
-
-};
-if (window) window.$VueMetaInfo = metaInfo;
-export default metaInfo;
-src目录下main.js文件中导入：
-
-import VueMetaInfo from '@/vue-meta-info.js';
-Vue.prototype.$VueMetaInfo = VueMetaInfo;
-```
-
-
-views目录中任意页面中使用：
-
-```
-export default {
-    metaInfo:window.$VueMetaInfo['index'],
-    name: '',
-    components: {
-```
 
 
 
-    },
-    props: {
-     
-    },
-    data() {
-      return {
-     
-      }
-    },
-}
-或者这样使用：
-
-```
-export default {
-    metaInfo: function() {
-      return this.getMetaInfo
-    },
-    computed: {
-        getMetaInfo: function() {
-            return this.$VueMetaInfo['index']
-        }
-    }
-}
-```
 
 
-或者这样使用：
-
-```
-export default {
-    metaInfo: {
-        title: '标题',
-        meta: [{
-            name: 'keywords',
-            content: '关键字'
-          },
-          {
-            name: 'description',
-            content: '内容'
-          }
-        ]
-     }
-}
-```
 
 
-另外请注意在项目目录下index.html中检查并添加好以下项：
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <meta data-vue-meta-info="true" name="keywords" content="关键字">
 <meta data-vue-meta-info="true" name="description" content="内容">
