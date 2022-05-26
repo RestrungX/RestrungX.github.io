@@ -67,38 +67,6 @@ bg: {
 	:style="bg"（vue数据绑定）
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <meta data-vue-meta-info="true" name="keywords" content="关键字">
 <meta data-vue-meta-info="true" name="description" content="内容">
 <title>标题</title>
